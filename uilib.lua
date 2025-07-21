@@ -1,5 +1,5 @@
 -- CoolUILib: A modern, modular, and animated UI library for Roblox.
--- Place this script in a ModuleScript under ReplicatedStorage.
+-- Bu script, herhangi bir executor ortamında veya direkt olarak LocalScript içinde kullanılabilir.
 
 local CoolUILib = {}
 
@@ -67,8 +67,8 @@ CoolUILib.Theme = {
 -- region -- UTILITIES & HELPERS --
 
 -- Function to create a new UI instance with default properties
-local function createUIElement(instanceType, properties) -- <T extends GuiObject> ve : T kaldırıldı
-    local element = Instance.new(instanceType) -- :: T kaldırıldı
+local function createUIElement(instanceType, properties)
+    local element = Instance.new(instanceType)
     for prop, value in pairs(properties) do
         if element[prop] ~= nil then -- Only set existing properties
             element[prop] = value
@@ -78,7 +78,7 @@ local function createUIElement(instanceType, properties) -- <T extends GuiObject
 end
 
 -- Applies UICorner to a GuiObject
-local function applyCorner(guiObject, radius) -- : GuiObject ve : UDim? kaldırıldı, : () kaldırıldı
+local function applyCorner(guiObject, radius)
     local corner = createUIElement("UICorner", {
         CornerRadius = radius or CoolUILib.Theme.CornerRadiusSmall
     })
@@ -86,8 +86,8 @@ local function applyCorner(guiObject, radius) -- : GuiObject ve : UDim? kaldır�
 end
 
 -- Applies a drop shadow to a GuiObject
-local function applyShadow(guiObject, offset, transparency, imageId) -- : GuiObject, : UDim?, : number?, : string? kaldırıldı, : () kaldırıldı
-    local shadowOffset = offset or CoolUILib.Lib.Theme.ShadowOffset
+local function applyShadow(guiObject, offset, transparency, imageId)
+    local shadowOffset = offset or CoolUILib.Theme.ShadowOffset
     local shadowTransparency = transparency or CoolUILib.Theme.ShadowTransparency
     local shadowImage = imageId or CoolUILib.Theme.ShadowImageId
 
@@ -107,7 +107,7 @@ local function applyShadow(guiObject, offset, transparency, imageId) -- : GuiObj
 end
 
 -- Global Fade In animation
-function CoolUILib.FadeIn(guiObject, duration) -- : GuiObject ve : number? kaldırıldı, : () kaldırıldı
+function CoolUILib.FadeIn(guiObject, duration)
     if not guiObject:IsA("GuiObject") then return end
     local dur = duration or CoolUILib.Theme.TweenInfoDefault.Time
 
@@ -146,7 +146,7 @@ function CoolUILib.FadeIn(guiObject, duration) -- : GuiObject ve : number? kald�
 end
 
 -- Global Fade Out animation
-function CoolUILib.FadeOut(guiObject, duration) -- : GuiObject ve : number? kaldırıldı, : () kaldırıldı
+function CoolUILib.FadeOut(guiObject, duration)
     if not guiObject:IsA("GuiObject") then return end
     local dur = duration or CoolUILib.Theme.TweenInfoDefault.Time
 
@@ -177,7 +177,7 @@ end
 -- region -- CORE UI ELEMENTS --
 
 -- Function to show an animated splash screen
-function CoolUILib.ShowSplash(parent, text, duration) -- : GuiObject, : string?, : number? kaldırıldı
+function CoolUILib.ShowSplash(parent, text, duration)
     local splashDuration = duration or 2.5
     local splashText = text or "CoolUILib"
 
@@ -234,7 +234,7 @@ function CoolUILib.ShowSplash(parent, text, duration) -- : GuiObject, : string?,
 end
 
 -- Creates a draggable main UI frame with title bar and shadow
-function CoolUILib.CreateFrame(parent, size, position, name, titleText) -- : GuiObject, : UDim2, : UDim2, : string?, : string? kaldırıldı, : Frame kaldırıldı
+function CoolUILib.CreateFrame(parent, size, position, name, titleText)
     local frame = createUIElement("Frame", {
         Name = name or "CoolFrame",
         Size = size,
@@ -285,10 +285,10 @@ function CoolUILib.CreateFrame(parent, size, position, name, titleText) -- : Gui
 
     -- Draggable functionality
     local isDragging = false
-    local dragStartPos -- : Vector2 kaldırıldı
-    local initialFramePos -- : UDim2 kaldırıldı
+    local dragStartPos
+    local initialFramePos
 
-    titleBar.InputBegan:Connect(function(input) -- : InputObject kaldırıldı
+    titleBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             isDragging = true
             dragStartPos = input.Position
@@ -297,7 +297,7 @@ function CoolUILib.CreateFrame(parent, size, position, name, titleText) -- : Gui
         end
     end)
 
-    UserInputService.InputChanged:Connect(function(input) -- : InputObject kaldırıldı
+    UserInputService.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement and isDragging then
             local delta = input.Position - dragStartPos
             frame.Position = UDim2.new(initialFramePos.X.Scale, initialFramePos.X.Offset + delta.X,
@@ -305,7 +305,7 @@ function CoolUILib.CreateFrame(parent, size, position, name, titleText) -- : Gui
         end
     end)
 
-    UserInputService.InputEnded:Connect(function(input) -- : InputObject kaldırıldı
+    UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 and isDragging then
             isDragging = false
             input:ReleaseFocus()
@@ -320,7 +320,7 @@ function CoolUILib.CreateFrame(parent, size, position, name, titleText) -- : Gui
 end
 
 -- Creates a customizable text label
-function CoolUILib.CreateLabel(parent, size, position, text, name, font, textScaled, textColor) -- : GuiObject, : UDim2, : UDim2, : string, : string?, : Enum.Font?, : boolean?, : Color3? kaldırıldı, : TextLabel kaldırıldı
+function CoolUILib.CreateLabel(parent, size, position, text, name, font, textScaled, textColor)
     local label = createUIElement("TextLabel", {
         Name = name or "CoolLabel",
         Size = size,
@@ -339,7 +339,7 @@ function CoolUILib.CreateLabel(parent, size, position, text, name, font, textSca
 end
 
 -- Creates an interactive button with hover/click animations
-function CoolUILib.CreateButton(parent, size, position, text, name, callback) -- : GuiObject, : UDim2, : UDim2, : string, : string?, : (() -> ())? kaldırıldı, : TextButton kaldırıldı
+function CoolUILib.CreateButton(parent, size, position, text, name, callback)
     local button = createUIElement("TextButton", {
         Name = name or "CoolButton",
         Size = size,
@@ -396,7 +396,7 @@ function CoolUILib.CreateButton(parent, size, position, text, name, callback) --
 end
 
 -- Creates a scrolling frame with auto-sizing canvas and layout
-function CoolUILib.CreateScrollingFrame(parent, size, position, name, contentPadding) -- : GuiObject, : UDim2, : UDim2, : string?, : number? kaldırıldı, : ScrollingFrame kaldırıldı
+function CoolUILib.CreateScrollingFrame(parent, size, position, name, contentPadding)
     local scrollFrame = createUIElement("ScrollingFrame", {
         Name = name or "CoolScrollFrame",
         Size = size,
@@ -441,7 +441,7 @@ function CoolUILib.CreateScrollingFrame(parent, size, position, name, contentPad
 end
 
 -- Creates a numerical slider with a thumb and value display
-function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, initialVal, step, onValueChangedCallback) -- : GuiObject, : UDim2, : UDim2, : string?, : number, : number, : number, : number, : ((value: number) -> ())? kaldırıldı, : (Frame, (value: number) -> ()) kaldırıldı
+function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, initialVal, step, onValueChangedCallback)
     local sliderFrame = createUIElement("Frame", {
         Name = name or "CoolSlider",
         Size = size,
@@ -503,7 +503,7 @@ function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, in
 
     local currentValue = math.clamp(initialVal, minVal, maxVal)
 
-    local function updateSlider(value) -- : number kaldırıldı
+    local function updateSlider(value)
         value = math.clamp(value, minVal, maxVal)
         value = math.round(value / step) * step -- Apply snapping to step
         currentValue = value
@@ -528,7 +528,7 @@ function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, in
     local isDragging = false
     local lastMouseX = 0
 
-    local function onThumbInputBegan(input) -- : InputObject kaldırıldı
+    local function onThumbInputBegan(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             isDragging = true
             lastMouseX = input.Position.X
@@ -537,7 +537,7 @@ function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, in
         end
     end
 
-    local function onThumbInputChanged(input) -- : InputObject kaldırıldı
+    local function onThumbInputChanged(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement and isDragging then
             local mouseDeltaX = input.Position.X - lastMouseX
             local currentThumbX = thumb.Position.X.Offset + thumbSize / 2 -- Center of thumb
@@ -551,7 +551,7 @@ function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, in
         end
     end
 
-    local function onThumbInputEnded(input) -- : InputObject kaldırıldı
+    local function onThumbInputEnded(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 and isDragging then
             isDragging = false
             thumb:ReleaseFocus()
@@ -564,7 +564,7 @@ function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, in
     UserInputService.InputEnded:Connect(onThumbInputEnded)
 
     -- Clicking on the track also moves the thumb
-    track.MouseButton1Click:Connect(function(x, y, input) -- : number, : number, : InputObject kaldırıldı
+    track.MouseButton1Click:Connect(function(x, y, input)
         local mousePosInTrackX = input.Position.X - track.AbsolutePosition.X
         local newPercentage = math.clamp(mousePosInTrackX / track.AbsoluteSize.X, 0, 1)
         local newValue = minVal + newPercentage * (maxVal - minVal)
@@ -575,7 +575,7 @@ function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, in
 end
 
 -- Creates a toggle switch (on/off)
-function CoolUILib.CreateToggle(parent, size, position, name, initialValue, onToggledCallback) -- : GuiObject, : UDim2, : UDim2, : string?, : boolean?, : ((isOn: boolean) -> ())? kaldırıldı, : (Frame, (isOn: boolean) -> ()) kaldırıldı
+function CoolUILib.CreateToggle(parent, size, position, name, initialValue, onToggledCallback)
     local toggleFrame = createUIElement("Frame", {
         Name = name or "CoolToggle",
         Size = size,
@@ -615,7 +615,7 @@ function CoolUILib.CreateToggle(parent, size, position, name, initialValue, onTo
     })
     applyCorner(thumb, UDim.new(0, thumbSize / 2)) -- Make thumb circular
 
-    local function updateToggle(value) -- : boolean kaldırıldı
+    local function updateToggle(value)
         currentToggleValue = value
         local targetX = (currentToggleValue and (size.X.Offset - thumbSize - padding) or padding)
         local targetBgColor = (currentToggleValue and CoolUILib.Theme.Accent or CoolUILib.Theme.TextMuted)
@@ -639,7 +639,7 @@ function CoolUILib.CreateToggle(parent, size, position, name, initialValue, onTo
 end
 
 -- Creates a dropdown menu with a list of selectable options
-function CoolUILib.CreateDropdown(parent, size, position, name, options, initialOption, onOptionSelectedCallback) -- : GuiObject, : UDim2, : UDim2, : string?, : {string}, : string?, : ((selectedOption: string, index: number) -> ())? kaldırıldı, : (Frame, (() -> string), ((option: string) -> ())) kaldırıldı
+function CoolUILib.CreateDropdown(parent, size, position, name, options, initialOption, onOptionSelectedCallback)
     local dropdownFrame = createUIElement("Frame", {
         Name = name or "CoolDropdown",
         Size = size,
@@ -708,7 +708,7 @@ function CoolUILib.CreateDropdown(parent, size, position, name, options, initial
         Parent = optionsFrame
     })
 
-    local optionButtons = {} -- : {TextButton} kaldırıldı
+    local optionButtons = {}
 
     local function closeDropdown()
         if not isOpen then return end
@@ -773,7 +773,7 @@ function CoolUILib.CreateDropdown(parent, size, position, name, options, initial
     end)
     
     -- Close dropdown if clicked outside
-    UserInputService.InputBegan:Connect(function(input, gameProcessed) -- : InputObject, : boolean kaldırıldı
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
         if isOpen and input.UserInputType == Enum.UserInputType.MouseButton1 and not gameProcessed then
             local mousePos = input.Position
             local dropdownAbsolutePos = dropdownFrame.AbsolutePosition
@@ -812,7 +812,7 @@ function CoolUILib.CreateDropdown(parent, size, position, name, options, initial
                 found = true
                 break
             end
-        end
+            end
         if not found then
             warn("Attempted to set dropdown option to '" .. option .. "' but it does not exist in the options list.")
         end
@@ -822,7 +822,7 @@ function CoolUILib.CreateDropdown(parent, size, position, name, options, initial
 end
 
 -- Creates a text input box
-function CoolUILib.CreateTextBox(parent, size, position, name, placeholderText, initialText, onTextChangedCallback, onFocusLostCallback) -- : GuiObject, : UDim2, : UDim2, : string?, : string?, : string?, : ((text: string) -> ())?, : ((text: string, cause: Enum.FocusLostCause) -> ())? kaldırıldı, : TextBox kaldırıldı
+function CoolUILib.CreateTextBox(parent, size, position, name, placeholderText, initialText, onTextChangedCallback, onFocusLostCallback)
     local textBox = createUIElement("TextBox", {
         Name = name or "CoolTextBox",
         Size = size,
