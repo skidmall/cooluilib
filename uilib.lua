@@ -1,4 +1,3 @@
---!strict
 -- CoolUILib: A modern, modular, and animated UI library for Roblox.
 -- Place this script in a ModuleScript under ReplicatedStorage.
 
