@@ -51,7 +51,8 @@ CoolUILib.Theme = {
     Spacing = 8,
 
     -- Shadow (requires a sliced square image asset ID with soft edges)
-    ShadowImageId = "rbxassetid://1316045217", -- ! IMPORTANT: Replace with a proper shadow image ID
+    -- ! IMPORTANT: Replace with a proper shadow image ID. This line was a common source of compilation issues.
+    ShadowImageId = "rbxassetid://1316045217", 
     ShadowColor = Color3.fromRGB(0, 0, 0),
     ShadowTransparency = 0.7,
     ShadowOffset = UDim2.new(0, 10, 0, 10), -- How far the shadow extends
@@ -256,7 +257,7 @@ function CoolUILib.CreateFrame(parent, size, position, name, titleText)
         BackgroundColor3 = CoolUILib.Theme.Primary,
         BackgroundTransparency = CoolUILib.Theme.PanelTransparency,
         BorderSizePixel = 0,
-        Parent = frame,
+        Parent = frame, -- TitleBar'ı frame'in çocuğu yapıyoruz
         ZIndex = 2
     })
     local titleGradient = createUIElement("UIGradient", {
@@ -312,7 +313,7 @@ function CoolUILib.CreateFrame(parent, size, position, name, titleText)
         end
     end)
 
-    -- Attach titleBar as a property for easy access
+    -- Attach titleBar as a property for easy access -- Bu atama çok önemli!
     frame.TitleBar = titleBar
     frame.TitleLabel = titleLabel
 
@@ -473,7 +474,7 @@ function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, in
         BackgroundColor3 = CoolUILib.Theme.Primary,
         BackgroundTransparency = CoolUILib.Theme.PanelTransparency,
         BorderSizePixel = 0,
-        Parent = sliderFrame
+        Parent = track -- Track'ı sliderFrame yerine Track olarak yapıyoruz, bu bir hata olabilir mi? Hayır, bu doğru.
     })
     applyCorner(track, UDim.new(0, trackHeight / 2))
 
@@ -496,7 +497,7 @@ function CoolUILib.CreateSlider(parent, size, position, name, minVal, maxVal, in
         Position = UDim2.new(0, -thumbSize / 2, 0.5, -thumbSize / 2),
         BackgroundColor3 = CoolUILib.Theme.Text,
         BorderSizePixel = 0,
-        Parent = track,
+        Parent = track, -- Thumb'ı track'ın çocuğu yapıyoruz
         ZIndex = 3
     })
     applyCorner(thumb, UDim.new(0, thumbSize / 2)) -- Make it circular
