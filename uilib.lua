@@ -136,6 +136,9 @@ end
 
 -- Function to show an animated splash screen
 function MyLib.ShowSplash(parent, text, duration)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local splashDuration = duration or 2.5
     local splashText = text or "MyLib"
 
@@ -193,6 +196,9 @@ end
 
 -- Creates a draggable main UI frame with title bar and shadow
 function MyLib.CreateFrame(parent, size, position, name, titleText)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local frame = createUIElement("Frame", {
         Name = name or "CoolFrame",
         Size = size,
@@ -268,6 +274,9 @@ end
 
 -- Creates a customizable text label
 function MyLib.CreateLabel(parent, size, position, text, name, font, textScaled, textColor)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local label = createUIElement("TextLabel", {
         Name = name or "CoolLabel",
         Size = size,
@@ -288,6 +297,9 @@ end
 
 -- Creates an interactive button with hover/click animations
 function MyLib.CreateButton(parent, size, position, text, name, callback)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local button = createUIElement("TextButton", {
         Name = name or "CoolButton",
         Size = size,
@@ -346,6 +358,9 @@ end
 
 -- Creates a scrolling frame with auto-sizing canvas and layout
 function MyLib.CreateScrollingFrame(parent, size, position, name, contentPadding)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local scrollFrame = createUIElement("ScrollingFrame", {
         Name = name or "CoolScrollFrame",
         Size = size,
@@ -392,6 +407,9 @@ end
 
 -- Creates a numerical slider with a thumb and value display
 function MyLib.CreateSlider(parent, size, position, name, minVal, maxVal, initialVal, step, onValueChangedCallback)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local sliderFrame = createUIElement("Frame", {
         Name = name or "CoolSlider",
         Size = size,
@@ -527,6 +545,9 @@ end
 
 -- Creates a toggle switch (on/off)
 function MyLib.CreateToggle(parent, size, position, name, initialValue, onToggledCallback)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local toggleFrame = createUIElement("Frame", {
         Name = name or "CoolToggle",
         Size = size,
@@ -592,6 +613,9 @@ end
 
 -- Creates a dropdown menu with a list of selectable options
 function MyLib.CreateDropdown(parent, size, position, name, options, initialOption, onOptionSelectedCallback)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local dropdownFrame = createUIElement("Frame", {
         Name = name or "CoolDropdown",
         Size = size,
@@ -776,6 +800,9 @@ end
 
 -- Creates a text input box
 function MyLib.CreateTextBox(parent, size, position, name, placeholderText, initialText, onTextChangedCallback, onFocusLostCallback)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local textBox = createUIElement("TextBox", {
         Name = name or "CoolTextBox",
         Size = size,
@@ -931,6 +958,9 @@ MyLib.Theme.ShadowOffset = UDim2.new(0, 16, 0, 16)
 
 -- TabPanel (decorator yok, doğrudan güvenli tanım)
 function MyLib.CreateTabPanel(parent, size, position, name, tabNames)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local panel = createUIElement("Frame", {
         Name = name or "TabPanel",
         Size = size,
@@ -991,6 +1021,9 @@ end
 
 -- ProgressBar
 function MyLib.CreateProgressBar(parent, size, position, name, initialValue)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local bar = createUIElement("Frame", {
         Name = name or "ProgressBar",
         Size = size,
@@ -1019,6 +1052,9 @@ end
 
 -- Tooltip
 function MyLib.CreateTooltip(target, text)
+    if not target then
+        error("[MyLib] Target parametresi nil! UI oluşturulamaz.")
+    end
     local tooltip = createUIElement("TextLabel", {
         Name = "Tooltip",
         Size = UDim2.new(0, 180, 0, 32),
@@ -1048,6 +1084,9 @@ end
 
 -- IconButton
 function MyLib.CreateIconButton(parent, size, position, iconId, text, name, callback)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local btn = MyLib.CreateButton(parent, size, position, text, name, callback)
     local icon = createUIElement("ImageLabel", {
         Name = "Icon",
@@ -1066,6 +1105,9 @@ end
 
 -- ModalDialog
 function MyLib.CreateModalDialog(parent, size, title, contentText, confirmText, cancelText, onConfirm, onCancel)
+    if not parent then
+        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+    end
     local modal = createUIElement("Frame", {
         Name = "ModalDialog",
         Size = size,
