@@ -202,11 +202,11 @@ function MyLib.CreateFrame(parent, size, position, name, titleText)
         BorderSizePixel = 0,
         Parent = parent,
         ClipsDescendants = true,
-        ZIndex = 1
+        ZIndex = 1,
+        Visible = true
     })
     applyCorner(frame, MyLib.Theme.CornerRadiusLarge)
     applyShadow(frame)
-
     -- Title Bar
     local titleBar = createUIElement("Frame", {
         Name = "TitleBar",
@@ -214,7 +214,7 @@ function MyLib.CreateFrame(parent, size, position, name, titleText)
         BackgroundColor3 = MyLib.Theme.Primary,
         BackgroundTransparency = MyLib.Theme.PanelTransparency,
         BorderSizePixel = 0,
-        Parent = frame, -- TitleBar'ı frame'in çocuğu yapıyoruz
+        Parent = frame,
         ZIndex = 2
     })
     local titleGradient = createUIElement("UIGradient", {
@@ -223,11 +223,7 @@ function MyLib.CreateFrame(parent, size, position, name, titleText)
         Rotation = 90,
         Parent = titleBar
     })
-    -- Apply corners only to top of title bar if it's supposed to match frame
     applyCorner(titleBar, UDim.new(0, MyLib.Theme.CornerRadiusLarge.Offset))
-
-
-    -- Title Label
     local titleLabel = MyLib.CreateLabel(
         titleBar,
         UDim2.new(1, -2 * MyLib.Theme.Padding, 1, 0),
@@ -235,26 +231,23 @@ function MyLib.CreateFrame(parent, size, position, name, titleText)
         titleText or name or "Cool UI",
         "FrameTitle",
         MyLib.Theme.FontTitle,
-        false, -- No text scaled for title, use explicit size
+        false,
         MyLib.Theme.Text
     )
     titleLabel.TextSize = 20
     titleLabel.TextXAlignment = Enum.TextXAlignment.Center
-
     -- Draggable functionality
     local isDragging = false
     local dragStartPos
     local initialFramePos
-
     titleBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             isDragging = true
             dragStartPos = input.Position
             initialFramePos = frame.Position
-            input:CaptureFocus() -- Keep focus even if mouse leaves button area
+            input:CaptureFocus()
         end
     end)
-
     UserInputService.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement and isDragging then
             local delta = input.Position - dragStartPos
@@ -262,18 +255,14 @@ function MyLib.CreateFrame(parent, size, position, name, titleText)
                                         initialFramePos.Y.Scale, initialFramePos.Y.Offset + delta.Y)
         end
     end)
-
     UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 and isDragging then
             isDragging = false
             input:ReleaseFocus()
         end
     end)
-
-    -- Attach titleBar as a property for easy access -- Bu atama çok önemli!
     frame.TitleBar = titleBar
     frame.TitleLabel = titleLabel
-
     return frame
 end
 
@@ -291,7 +280,8 @@ function MyLib.CreateLabel(parent, size, position, text, name, font, textScaled,
         TextSize = MyLib.Theme.FontSizeDefault,
         TextTransparency = 0,
         Parent = parent,
-        ZIndex = 2
+        ZIndex = 2,
+        Visible = true
     })
     return label
 end
@@ -309,7 +299,8 @@ function MyLib.CreateButton(parent, size, position, text, name, callback)
         TextScaled = true,
         Font = MyLib.Theme.FontButton,
         Parent = parent,
-        ZIndex = 2
+        ZIndex = 2,
+        Visible = true
     })
     applyCorner(button, MyLib.Theme.CornerRadiusSmall)
 
@@ -362,11 +353,12 @@ function MyLib.CreateScrollingFrame(parent, size, position, name, contentPadding
         BackgroundColor3 = MyLib.Theme.Secondary,
         BackgroundTransparency = MyLib.Theme.PanelTransparency,
         BorderSizePixel = 0,
-        CanvasSize = UDim2.new(0, 0, 0, 0), -- Will be adjusted dynamically
+        CanvasSize = UDim2.new(0, 0, 0, 0),
         ScrollBarThickness = MyLib.Theme.Spacing,
         ScrollBarImageColor3 = MyLib.Theme.Accent,
         Parent = parent,
-        ZIndex = 1
+        ZIndex = 1,
+        Visible = true
     })
     applyCorner(scrollFrame, MyLib.Theme.CornerRadiusMedium)
 
@@ -408,7 +400,8 @@ function MyLib.CreateSlider(parent, size, position, name, minVal, maxVal, initia
         BackgroundTransparency = MyLib.Theme.InputTransparency,
         BorderSizePixel = 0,
         Parent = parent,
-        ZIndex = 2
+        ZIndex = 2,
+        Visible = true
     })
     applyCorner(sliderFrame, MyLib.Theme.CornerRadiusSmall)
 
@@ -543,7 +536,8 @@ function MyLib.CreateToggle(parent, size, position, name, initialValue, onToggle
         BorderSizePixel = 0,
         Parent = parent,
         ClipsDescendants = true,
-        ZIndex = 2
+        ZIndex = 2,
+        Visible = true
     })
     applyCorner(toggleFrame, UDim.new(0, size.Y.Offset / 2)) -- Makes it pill-shaped
 
@@ -606,7 +600,8 @@ function MyLib.CreateDropdown(parent, size, position, name, options, initialOpti
         BackgroundTransparency = MyLib.Theme.InputTransparency,
         BorderSizePixel = 0,
         Parent = parent,
-        ZIndex = 2
+        ZIndex = 2,
+        Visible = true
     })
     applyCorner(dropdownFrame, MyLib.Theme.CornerRadiusSmall)
 
@@ -796,7 +791,8 @@ function MyLib.CreateTextBox(parent, size, position, name, placeholderText, init
         Font = MyLib.Theme.FontMain,
         ClearTextOnFocus = false,
         Parent = parent,
-        ZIndex = 2
+        ZIndex = 2,
+        Visible = true
     })
     applyCorner(textBox, MyLib.Theme.CornerRadiusSmall)
 
@@ -1003,7 +999,8 @@ function MyLib.CreateProgressBar(parent, size, position, name, initialValue)
         BackgroundTransparency = MyLib.Theme.PanelTransparency,
         BorderSizePixel = 0,
         Parent = parent,
-        ZIndex = 2
+        ZIndex = 2,
+        Visible = true
     })
     applyCorner(bar, MyLib.Theme.CornerRadiusMedium)
     local fill = createUIElement("Frame", {
