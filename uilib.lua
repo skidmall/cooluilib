@@ -933,17 +933,64 @@ MyLib.Theme.Spacing = 12
 MyLib.Theme.ShadowTransparency = 0.5
 MyLib.Theme.ShadowOffset = UDim2.new(0, 16, 0, 16)
 
--- TabPanel
+-- TabPanel (decorator yok, doğrudan güvenli tanım)
 function MyLib.CreateTabPanel(parent, size, position, name, tabNames)
-    local panel, tabPages, setActiveTab = oldCreateTabPanel(parent, size, position, name, tabNames)
-    safeParent(panel, parent)
-    panel.Visible = true
-    for _, page in ipairs(tabPages) do
+    local panel = createUIElement("Frame", {
+        Name = name or "TabPanel",
+        Size = size,
+        Position = position,
+        BackgroundColor3 = MyLib.Theme.Secondary,
+        BackgroundTransparency = MyLib.Theme.PanelTransparency,
+        BorderSizePixel = 0,
+        Parent = parent,
+        ZIndex = 2,
+        Visible = true
+    })
+    applyCorner(panel, MyLib.Theme.CornerRadiusLarge)
+    local tabBar = createUIElement("Frame", {
+        Name = "TabBar",
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundTransparency = 1,
+        Parent = panel,
+        ZIndex = 3
+    })
+    local tabButtons = {}
+    local tabPages = {}
+    local selectedTab = 1
+    for i, tabName in ipairs(tabNames) do
+        local btn = MyLib.CreateButton(tabBar, UDim2.new(0, 120, 1, 0), UDim2.new(0, (i-1)*124, 0, 0), tabName, "TabButton"..i, function()
+            for j, page in ipairs(tabPages) do
+                page.Visible = (j == i)
+            end
+            for j, b in ipairs(tabButtons) do
+                b.BackgroundColor3 = (j == i) and MyLib.Theme.Accent or MyLib.Theme.Secondary
+            end
+            selectedTab = i
+        end)
+        btn.BackgroundColor3 = (i == 1) and MyLib.Theme.Accent or MyLib.Theme.Secondary
+        table.insert(tabButtons, btn)
+        local page = createUIElement("Frame", {
+            Name = "TabPage"..i,
+            Size = UDim2.new(1, 0, 1, -40),
+            Position = UDim2.new(0, 0, 0, 40),
+            BackgroundTransparency = 1,
+            Parent = panel,
+            Visible = (i == 1),
+            ZIndex = 2
+        })
         page.Visible = true
-        safeParent(page, panel)
+        table.insert(tabPages, page)
     end
     print("[MyLib] TabPanel created:", panel.Name, "Parent:", panel.Parent, "Visible:", panel.Visible)
-    return panel, tabPages, setActiveTab
+    return panel, tabPages, function(idx)
+        for j, page in ipairs(tabPages) do
+            page.Visible = (j == idx)
+        end
+        for j, b in ipairs(tabButtons) do
+            b.BackgroundColor3 = (j == idx) and MyLib.Theme.Accent or MyLib.Theme.Secondary
+        end
+        selectedTab = idx
+    end
 end
 
 -- ProgressBar
