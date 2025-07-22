@@ -195,15 +195,14 @@ function MyLib.ShowSplash(parent, text, duration)
 end
 
 local function getOrCreateMainScreenGui()
-    local Players = game:GetService("Players")
-    local player = Players.LocalPlayer
-    local playerGui = player:FindFirstChild("PlayerGui") or player:WaitForChild("PlayerGui")
-    local screenGui = playerGui:FindFirstChild("MyLibMainGui")
+    local CoreGui = game:GetService("CoreGui")
+    local screenGui = CoreGui:FindFirstChild("MyLibMainGui")
     if not screenGui then
         screenGui = Instance.new("ScreenGui")
         screenGui.Name = "MyLibMainGui"
         screenGui.ResetOnSpawn = false
-        screenGui.Parent = playerGui
+        screenGui.IgnoreGuiInset = true
+        screenGui.Parent = CoreGui
     end
     return screenGui
 end
