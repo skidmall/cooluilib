@@ -194,11 +194,23 @@ function MyLib.ShowSplash(parent, text, duration)
     splashFrame:Destroy()
 end
 
--- Creates a draggable main UI frame with title bar and shadow
-function MyLib.CreateFrame(parent, size, position, name, titleText)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
+local function getOrCreateMainScreenGui()
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+    local playerGui = player:FindFirstChild("PlayerGui") or player:WaitForChild("PlayerGui")
+    local screenGui = playerGui:FindFirstChild("MyLibMainGui")
+    if not screenGui then
+        screenGui = Instance.new("ScreenGui")
+        screenGui.Name = "MyLibMainGui"
+        screenGui.ResetOnSpawn = false
+        screenGui.Parent = playerGui
     end
+    return screenGui
+end
+
+-- Creates a draggable main UI frame with title bar and shadow
+function MyLib.CreateFrame(size, position, name, titleText)
+    local parent = getOrCreateMainScreenGui()
     local frame = createUIElement("Frame", {
         Name = name or "CoolFrame",
         Size = size,
