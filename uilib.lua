@@ -135,30 +135,25 @@ end
 -- region -- CORE UI ELEMENTS --
 
 -- Function to show an animated splash screen
-function MyLib.ShowSplash(parent, text, duration)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.ShowSplash(text, duration)
+    local parent = getOrCreateMainScreenGui()
     local splashDuration = duration or 2.5
     local splashText = text or "MyLib"
-
     local splashFrame = createUIElement("Frame", {
         Name = "SplashScreen",
         Size = UDim2.new(1, 0, 1, 0),
         Position = UDim2.new(0, 0, 0, 0),
         BackgroundColor3 = MyLib.Theme.Primary,
-        BackgroundTransparency = 1, -- Starts invisible
+        BackgroundTransparency = 1,
         Parent = parent,
-        ZIndex = 100 -- Ensure it's on top of everything
+        ZIndex = 100
     })
-
     local gradient = createUIElement("UIGradient", {
         Color = MyLib.Theme.GradientMain,
         Transparency = NumberSequence.new(0.8, 0.95),
         Rotation = 90,
         Parent = splashFrame
     })
-
     local splashLabel = createUIElement("TextLabel", {
         Size = UDim2.new(0.5, 0, 0.2, 0),
         Position = UDim2.new(0.25, 0, 0.4, 0),
@@ -167,44 +162,63 @@ function MyLib.ShowSplash(parent, text, duration)
         TextColor3 = MyLib.Theme.Text,
         TextScaled = true,
         Font = MyLib.Theme.FontTitle,
-        TextTransparency = 1, -- Starts invisible
+        TextTransparency = 1,
         Parent = splashFrame
     })
-
-    -- Fade in background and text
     TweenService:Create(splashFrame, MyLib.Theme.TweenInfoDefault, {BackgroundTransparency = 0.05}):Play()
-    local textTween = TweenService:Create(splashLabel, MyLib.Theme.TweenInfoDefault, {TextTransparency = 0})
-    textTween:Play()
-
-    -- Text scaling bounce animation
+    TweenService:Create(splashLabel, MyLib.Theme.TweenInfoDefault, {TextTransparency = 0}):Play()
     splashLabel.Size = UDim2.new(0.4, 0, 0.15, 0)
     splashLabel.Position = UDim2.new(0.3, 0, 0.425, 0)
     TweenService:Create(splashLabel, MyLib.Theme.TweenInfoBounce, {
         Size = UDim2.new(0.5, 0, 0.2, 0),
         Position = UDim2.new(0.25, 0, 0.4, 0)
     }):Play()
-
     task.wait(splashDuration)
-
-    -- Fade out
     TweenService:Create(splashFrame, MyLib.Theme.TweenInfoDefault, {BackgroundTransparency = 1}):Play()
     TweenService:Create(splashLabel, MyLib.Theme.TweenInfoDefault, {TextTransparency = 1}):Play()
-
     task.wait(MyLib.Theme.TweenInfoDefault.Time)
     splashFrame:Destroy()
 end
 
-local function getOrCreateMainScreenGui()
-    local CoreGui = game:GetService("CoreGui")
-    local screenGui = CoreGui:FindFirstChild("MyLibMainGui")
-    if not screenGui then
-        screenGui = Instance.new("ScreenGui")
-        screenGui.Name = "MyLibMainGui"
-        screenGui.ResetOnSpawn = false
-        screenGui.IgnoreGuiInset = true
-        screenGui.Parent = CoreGui
+-- Executor uyumluluğu ve ana GUI yönetimi
+local CoreGui = game:GetService("CoreGui")
+local function getParentGui()
+    if syn and syn.protect_gui then
+        local gui = Instance.new("ScreenGui")
+        syn.protect_gui(gui)
+        gui.Parent = CoreGui
+        return gui
+    elseif gethui then
+        local gui = Instance.new("ScreenGui")
+        gui.Parent = gethui()
+        return gui
+    else
+        local gui = Instance.new("ScreenGui")
+        gui.Parent = CoreGui
+        return gui
     end
-    return screenGui
+end
+
+local function removeOldGui()
+    for _, gui in ipairs(CoreGui:GetChildren()) do
+        if gui:IsA("ScreenGui") and gui.Name == "MyLibMainGui" then
+            gui:Destroy()
+        end
+    end
+end
+
+local function getOrCreateMainScreenGui()
+    local existing = CoreGui:FindFirstChild("MyLibMainGui")
+    if existing then return existing end
+    removeOldGui()
+    local gui = getParentGui()
+    gui.Name = "MyLibMainGui"
+    gui.IgnoreGuiInset = true
+    return gui
+end
+
+function MyLib.Init()
+    return getOrCreateMainScreenGui()
 end
 
 -- Creates a draggable main UI frame with title bar and shadow
@@ -284,10 +298,8 @@ function MyLib.CreateFrame(size, position, name, titleText)
 end
 
 -- Creates a customizable text label
-function MyLib.CreateLabel(parent, size, position, text, name, font, textScaled, textColor)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateLabel(size, position, text, name, font, textScaled, textColor)
+    local parent = getOrCreateMainScreenGui()
     local label = createUIElement("TextLabel", {
         Name = name or "CoolLabel",
         Size = size,
@@ -307,10 +319,8 @@ function MyLib.CreateLabel(parent, size, position, text, name, font, textScaled,
 end
 
 -- Creates an interactive button with hover/click animations
-function MyLib.CreateButton(parent, size, position, text, name, callback)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateButton(size, position, text, name, callback)
+    local parent = getOrCreateMainScreenGui()
     local button = createUIElement("TextButton", {
         Name = name or "CoolButton",
         Size = size,
@@ -368,10 +378,8 @@ function MyLib.CreateButton(parent, size, position, text, name, callback)
 end
 
 -- Creates a scrolling frame with auto-sizing canvas and layout
-function MyLib.CreateScrollingFrame(parent, size, position, name, contentPadding)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateScrollingFrame(size, position, name, contentPadding)
+    local parent = getOrCreateMainScreenGui()
     local scrollFrame = createUIElement("ScrollingFrame", {
         Name = name or "CoolScrollFrame",
         Size = size,
@@ -417,10 +425,8 @@ function MyLib.CreateScrollingFrame(parent, size, position, name, contentPadding
 end
 
 -- Creates a numerical slider with a thumb and value display
-function MyLib.CreateSlider(parent, size, position, name, minVal, maxVal, initialVal, step, onValueChangedCallback)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateSlider(size, position, name, minVal, maxVal, initialVal, step, onValueChangedCallback)
+    local parent = getOrCreateMainScreenGui()
     local sliderFrame = createUIElement("Frame", {
         Name = name or "CoolSlider",
         Size = size,
@@ -555,10 +561,8 @@ function MyLib.CreateSlider(parent, size, position, name, minVal, maxVal, initia
 end
 
 -- Creates a toggle switch (on/off)
-function MyLib.CreateToggle(parent, size, position, name, initialValue, onToggledCallback)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateToggle(size, position, name, initialValue, onToggledCallback)
+    local parent = getOrCreateMainScreenGui()
     local toggleFrame = createUIElement("Frame", {
         Name = name or "CoolToggle",
         Size = size,
@@ -623,10 +627,8 @@ function MyLib.CreateToggle(parent, size, position, name, initialValue, onToggle
 end
 
 -- Creates a dropdown menu with a list of selectable options
-function MyLib.CreateDropdown(parent, size, position, name, options, initialOption, onOptionSelectedCallback)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateDropdown(size, position, name, options, initialOption, onOptionSelectedCallback)
+    local parent = getOrCreateMainScreenGui()
     local dropdownFrame = createUIElement("Frame", {
         Name = name or "CoolDropdown",
         Size = size,
@@ -810,10 +812,8 @@ function MyLib.CreateDropdown(parent, size, position, name, options, initialOpti
 end
 
 -- Creates a text input box
-function MyLib.CreateTextBox(parent, size, position, name, placeholderText, initialText, onTextChangedCallback, onFocusLostCallback)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateTextBox(size, position, name, placeholderText, initialText, onTextChangedCallback, onFocusLostCallback)
+    local parent = getOrCreateMainScreenGui()
     local textBox = createUIElement("TextBox", {
         Name = name or "CoolTextBox",
         Size = size,
@@ -882,72 +882,6 @@ local function safeParent(obj, parent)
     end
 end
 
--- Gelişmiş Splash Ekranı (otomatik açılış)
-local function showModernSplash()
-    local playerGui = Players.LocalPlayer and Players.LocalPlayer:FindFirstChild("PlayerGui")
-    if not playerGui then return end
-    local splashFrame = createUIElement("Frame", {
-        Name = "MyLibSplashScreen",
-        Size = UDim2.new(1, 0, 1, 0),
-        Position = UDim2.new(0, 0, 0, 0),
-        BackgroundColor3 = MyLib.Theme.Primary,
-        BackgroundTransparency = 1,
-        ZIndex = 200
-    })
-    safeParent(splashFrame, playerGui)
-    local gradient = createUIElement("UIGradient", {
-        Color = ColorSequence.new{
-            ColorSequenceKeypoint.new(0, MyLib.Theme.Accent),
-            ColorSequenceKeypoint.new(1, MyLib.Theme.Primary)
-        },
-        Transparency = NumberSequence.new(0.7, 0.95),
-        Rotation = 45,
-        Parent = splashFrame
-    })
-    local glow = createUIElement("ImageLabel", {
-        Name = "Glow",
-        Size = UDim2.new(0.6, 0, 0.25, 0),
-        Position = UDim2.new(0.2, 0, 0.38, 0),
-        BackgroundTransparency = 1,
-        Image = "rbxassetid://5107168713",
-        ImageColor3 = MyLib.Theme.Accent,
-        ImageTransparency = 0.7,
-        ZIndex = 202,
-        Parent = splashFrame
-    })
-    local splashLabel = createUIElement("TextLabel", {
-        Size = UDim2.new(0.5, 0, 0.18, 0),
-        Position = UDim2.new(0.25, 0, 0.41, 0),
-        BackgroundTransparency = 1,
-        Text = "MyLib",
-        TextColor3 = MyLib.Theme.Text,
-        TextStrokeTransparency = 0.7,
-        TextStrokeColor3 = MyLib.Theme.Accent,
-        TextScaled = true,
-        Font = MyLib.Theme.FontTitle,
-        TextTransparency = 1,
-        Parent = splashFrame,
-        ZIndex = 203
-    })
-    TweenService:Create(splashFrame, MyLib.Theme.TweenInfoDefault, {BackgroundTransparency = 0.05}):Play()
-    TweenService:Create(splashLabel, MyLib.Theme.TweenInfoDefault, {TextTransparency = 0}):Play()
-    TweenService:Create(glow, MyLib.Theme.TweenInfoBounce, {ImageTransparency = 0.2, Size = UDim2.new(0.7,0,0.3,0)}):Play()
-    splashLabel.Size = UDim2.new(0.4, 0, 0.13, 0)
-    splashLabel.Position = UDim2.new(0.3, 0, 0.44, 0)
-    TweenService:Create(splashLabel, MyLib.Theme.TweenInfoBounce, {
-        Size = UDim2.new(0.5, 0, 0.18, 0),
-        Position = UDim2.new(0.25, 0, 0.41, 0)
-    }):Play()
-    task.wait(2.7)
-    TweenService:Create(splashLabel, MyLib.Theme.TweenInfoDefault, {TextTransparency = 1}):Play()
-    TweenService:Create(glow, MyLib.Theme.TweenInfoDefault, {ImageTransparency = 1}):Play()
-    TweenService:Create(splashFrame, MyLib.Theme.TweenInfoDefault, {BackgroundTransparency = 1}):Play()
-    task.wait(MyLib.Theme.TweenInfoDefault.Time)
-    splashFrame:Destroy()
-end
-
-showModernSplash()
-
 -- Tema güncellemesi (daha modern ve canlı)
 MyLib.Theme.Primary = Color3.fromRGB(24, 28, 40)
 MyLib.Theme.Secondary = Color3.fromRGB(38, 44, 60)
@@ -968,10 +902,8 @@ MyLib.Theme.ShadowTransparency = 0.5
 MyLib.Theme.ShadowOffset = UDim2.new(0, 16, 0, 16)
 
 -- TabPanel (decorator yok, doğrudan güvenli tanım)
-function MyLib.CreateTabPanel(parent, size, position, name, tabNames)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateTabPanel(size, position, name, tabNames)
+    local parent = getOrCreateMainScreenGui()
     local panel = createUIElement("Frame", {
         Name = name or "TabPanel",
         Size = size,
@@ -1031,10 +963,8 @@ function MyLib.CreateTabPanel(parent, size, position, name, tabNames)
 end
 
 -- ProgressBar
-function MyLib.CreateProgressBar(parent, size, position, name, initialValue)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateProgressBar(size, position, name, initialValue)
+    local parent = getOrCreateMainScreenGui()
     local bar = createUIElement("Frame", {
         Name = name or "ProgressBar",
         Size = size,
@@ -1063,9 +993,7 @@ end
 
 -- Tooltip
 function MyLib.CreateTooltip(target, text)
-    if not target then
-        error("[MyLib] Target parametresi nil! UI oluşturulamaz.")
-    end
+    local parent = getOrCreateMainScreenGui()
     local tooltip = createUIElement("TextLabel", {
         Name = "Tooltip",
         Size = UDim2.new(0, 180, 0, 32),
@@ -1094,10 +1022,8 @@ function MyLib.CreateTooltip(target, text)
 end
 
 -- IconButton
-function MyLib.CreateIconButton(parent, size, position, iconId, text, name, callback)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateIconButton(size, position, iconId, text, name, callback)
+    local parent = getOrCreateMainScreenGui()
     local btn = MyLib.CreateButton(parent, size, position, text, name, callback)
     local icon = createUIElement("ImageLabel", {
         Name = "Icon",
@@ -1115,10 +1041,8 @@ function MyLib.CreateIconButton(parent, size, position, iconId, text, name, call
 end
 
 -- ModalDialog
-function MyLib.CreateModalDialog(parent, size, title, contentText, confirmText, cancelText, onConfirm, onCancel)
-    if not parent then
-        error("[MyLib] Parent parametresi nil! UI oluşturulamaz.")
-    end
+function MyLib.CreateModalDialog(size, title, contentText, confirmText, cancelText, onConfirm, onCancel)
+    local parent = getOrCreateMainScreenGui()
     local modal = createUIElement("Frame", {
         Name = "ModalDialog",
         Size = size,
